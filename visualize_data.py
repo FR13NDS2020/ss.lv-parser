@@ -4,12 +4,13 @@ import json
 import matplotlib
 import re
 
-
+# The reader function reads data from a JSON file.
 def reader(file_name):
     with open(f"{file_name}.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
 
+# The barplot function creates a bar plot with x and y data, labels, title, gridlines, values, and color map.
 def barplot(x_data, y_data, x_label="", y_label="count", title=""):
     _, ax = plt.subplots(figsize=(10, 7))
 
@@ -32,6 +33,9 @@ def barplot(x_data, y_data, x_label="", y_label="count", title=""):
     plt.show()
 
 
+"""The visualize function allows a user to choose a parameter to visualize, 
+extracts the models based on the parameter, processes the models (if videocards is True), 
+creates a count of the models, sorts it, and passes it to barplot for visualization."""
 def visualize(videocards):
     json_data = reader("parsedsska")
     keys = list(json_data[0].keys())

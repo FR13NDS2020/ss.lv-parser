@@ -49,6 +49,7 @@ def parse(URL):
             product_data.append(da)
 
 
+# gettinglinks makes a GET request to a URL and returns a list of all links to be parsed.
 def gettinglinks(URL):
     h = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
@@ -67,6 +68,7 @@ def gettinglinks(URL):
     return all_links
 
 
+# parse_pages uses concurrent.futures to parse the links in parallel and show progress. The final result is written to a file.
 def parse_pages(URL):
     with concurrent.futures.ThreadPoolExecutor() as executor:
         links = gettinglinks(URL)
