@@ -1,6 +1,6 @@
 # 💻 ss.lv-parser
 I created a parser for personal use 🤓. I was curious and wanted to explore my interests, so I made it!
-
+____
 ### 💡 Simple instructions
 At the start, you'll be asked 3 questions:
 
@@ -16,5 +16,15 @@ Here, you just need to select the parameter by which the calculation will be mad
 ### 📊 Result
 ![result](https://github.com/FR13NDS2020/ss.lv-parser/blob/main/assets/visualized.png)
 
-### 💾 JSON file
-![JSON](https://github.com/FR13NDS2020/ss.lv-parser/blob/main/assets/json.png)
+### 💾 JSON
+The json file is saved in the same directory where the exe file is located (always saved under the same name).
+```json
+{
+        "Model": "iPhone 14 Pro",
+        "Volume, Gb": "128",
+        "Cond.": "used",
+        "Price": "1,120  €",
+        "Region": "Riga",
+        "Link": "https://www.ss.com/msg/en/electronics/phones/mobile-phones/apple/iphone-14-pro/cbikhh.html"
+    },
+```
