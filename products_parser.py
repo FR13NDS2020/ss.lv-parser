@@ -4,76 +4,73 @@ import concurrent.futures
 import requests
 import tqdm
 
+
+def write_to_file(data, file_name):
+    with open(f"{file_name}.json", "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
+
 product_data = []
-
-
-def writer(data, file_name):
-    with open(f"{file_name}.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-
-
-def parse(URL):
-    h = {
+def parse_data(url):
+    headers = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/108.0.0.0 Safari/537.36",
     }
 
-    req = requests.get(url=URL, headers=h)
-    src = req.text
-    soup = BeautifulSoup(src, "lxml")
+    response = requests.get(url=url, headers=headers)
+    source = response.text
+    soup = BeautifulSoup(source, "lxml")
 
-    column = soup.find("table", {"id": False, "align": "center", "border": "0", "cellpadding": "2", "cellspacing": "0", "width": "100%"}).findAll("tr")
+    columns = soup.find("table", {"id": False, "align": "center", "border": "0", "cellpadding": "2",
+                                  "cellspacing": "0", "width": "100%"}).find_all("tr")
 
-    # names for ccategories
+    data_names = soup.find("tr", {"id": "head_line"}).find_all("a")
 
-    data_names = soup.find("tr", {"id": "head_line"}).findAll("a")
+    names = [name.text for name in data_names[1:]]
 
-    names = []
-    for i in data_names[1:]:
-        names.append(i.text)
+    for column in columns[1:]:
+        cells = column.find_all("td")[3:]
+        id = column["id"]
+        if len(id) == 11:
+            data = {}
+            for i in range(len(names)):
+                data[names[i]] = cells[i].text if i < len(cells) else None
 
-    # getting data
+            region = column.find("div", class_="ads_region")
+            link = column.find("a", href=True)
 
-    for j in column[1:]:
-        data = j.findAll("td")[3:]
-        ids = j["id"]
-        if len(ids) == 11:
-            da = {}
-            for l in range(len(names)):
-                da[names[l]] = data[l].text if l < len(data) else None
-            region = j.find("div", class_="ads_region")
-            link = j.find("a", href=True)
-            if region is not None:
-                da["Region"] = region.text if region else None
-            da["Link"] = "https://www.ss.com" + link["href"] if link else None
-            product_data.append(da)
+            data["Region"] = region.text if region else None
+            data["Link"] = "https://www.ss.com" + link["href"] if link else None
+            product_data.append(data)
+
+    return product_data
 
 
-# gettinglinks makes a GET request to a URL and returns a list of all links to be parsed.
-def gettinglinks(URL):
-    h = {
+def get_links(url):
+    headers = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
     }
-    req = requests.get(url=URL, headers=h)
-    src = req.text
-    soup = BeautifulSoup(src, "lxml")
+    response = requests.get(url=url, headers=headers)
+    source = response.text
+    soup = BeautifulSoup(source, "lxml")
 
     links_count = soup.find("a", {"class": "navi"})
     count = links_count["href"][:-5]
     pages = count.split("page")[1]
-    all_links = []
-    for i in range(int(pages)):
-        all_links.append(URL + f"page{i+1}.html")
+    all_links = [f"{url}page{i + 1}.html" for i in range(int(pages))]
 
     return all_links
 
 
-# parse_pages uses concurrent.futures to parse the links in parallel and show progress. The final result is written to a file.
 def parse_pages(URL):
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        links = gettinglinks(URL)
-        futures = [executor.submit(parse, i) for i in links]
-        for f in tqdm.tqdm(concurrent.futures.as_completed(futures), total=len(links)):
-            i = f.result()
+        links = get_links(URL)
 
-    writer(product_data, "parsedsska")
+        # Submit tasks to the executor
+        tasks = [executor.submit(parse_data, i) for i in links]
+
+        # Use tqdm to display progress bar
+        for future in tqdm.tqdm(concurrent.futures.as_completed(tasks), total=len(links)):
+            i = future.result()
+
+    # Write the final result to a file
+    write_to_file(product_data, "parsedsska")
