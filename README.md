@@ -17,3 +17,4 @@ Here, you just need to select the parameter by which the calculation will be mad
 ![result](https://github.com/FR13NDS2020/ss.lv-parser/blob/main/assets/visualized.png)
 
 ### 💾 JSON file
+![JSON](https://github.com/FR13NDS2020/ss.lv-parser/blob/main/assets/json.png)
