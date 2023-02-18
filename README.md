@@ -13,6 +13,7 @@ Just press enter to choose the default option (0). This option removes all lette
 ### 🔍 select parameter:
 Here, you just need to select the parameter by which the calculation will be made.
 ![parameters](https://github.com/FR13NDS2020/ss.lv-parser/blob/main/assets/parameters.png)
+
 ### 📊 Result
 ![result](https://github.com/FR13NDS2020/ss.lv-parser/blob/main/assets/visualized.png)
 
