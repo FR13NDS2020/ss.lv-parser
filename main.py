@@ -6,10 +6,7 @@ def main():
     link = input("Please insert link : ")
     parse_pages(link)
     videocards = input("print 0 or 1 if you want enable filter for videocards: ")
-    if videocards == "":
-        visualize_parameter(0)
-    if videocards != "":
-        visualize_parameter(1)
+    visualize_parameter(0 if videocards in {"", "0"} else 1)
 
 
 if __name__ == '__main__':
